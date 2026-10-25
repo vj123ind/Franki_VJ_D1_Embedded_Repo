@@ -1,0 +1,80 @@
+// C++ code
+//
+#define led_red 8
+#define led_yellow 7
+#define led_green 6
+#define led_red_ped 4
+#define led_green_ped 3
+#define button 2
+int state = 0;
+
+bool button_pressed = false; 
+
+void setup()
+{
+  pinMode(led_red, OUTPUT);
+  pinMode(led_yellow, OUTPUT);
+  pinMode(led_green, OUTPUT);
+  pinMode(led_red_ped, OUTPUT);
+  pinMode(led_green_ped, OUTPUT);
+  pinMode(button, INPUT_PULLUP);
+  
+  
+  digitalWrite(led_red, LOW);
+  digitalWrite(led_green,LOW); 
+  digitalWrite(led_yellow,LOW);
+  digitalWrite(led_red_ped, LOW); 
+  digitalWrite(led_green_ped,LOW);   
+  
+  attachInterrupt(digitalPinToInterrupt(button),buttonISR,FALLING);
+}
+
+void loop()
+{ 
+switch (state) {
+case 0: // vehicle Red ON, Pedestrian green on 
+  digitalWrite(led_red, HIGH);
+  digitalWrite(led_green_ped, HIGH);
+  delay(10000);
+  
+     state = 1;
+  
+  break;
+  
+case 1: // vehicle Red + Yellow ON
+  digitalWrite(led_red, HIGH);
+  digitalWrite(led_yellow, HIGH);
+  digitalWrite(led_green_ped, LOW);
+  digitalWrite(led_red_ped, HIGH);
+  delay(5000);
+  
+     state = 2;
+  break;
+  
+case 2: // vehicle Green ON
+  digitalWrite(led_green, HIGH);
+  digitalWrite(led_red, LOW);
+  digitalWrite(led_yellow,LOW);
+  delay(10000);
+  while(!button_pressed);    // wait for the pedestrian button press
+  state = 3;
+  button_pressed = false;
+break;
+  
+case 3: //vehicle Yellow ON  
+  digitalWrite(led_green, LOW);
+  digitalWrite(led_yellow,HIGH);
+  delay(5000);
+  digitalWrite(led_yellow, LOW);
+  digitalWrite(led_red_ped, LOW);
+     state = 0;
+  break;
+  
+} 
+}
+
+
+void buttonISR()
+{
+  button_pressed = true; 
+}
