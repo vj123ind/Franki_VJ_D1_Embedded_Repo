@@ -1,0 +1,55 @@
+// C++ code
+//
+#define led_red 8
+#define led_yellow 7
+#define led_green 6
+int state = 0;
+
+
+void setup()
+{
+  pinMode(led_red, OUTPUT);
+  pinMode(led_yellow, OUTPUT);
+  pinMode(led_green, OUTPUT);
+  
+  
+  digitalWrite(led_red, LOW);
+  digitalWrite(led_green,LOW); 
+  digitalWrite(led_yellow,LOW);
+  
+}
+
+void loop()
+{ 
+switch (state) {
+case 0: // vehicle Red ON
+  digitalWrite(led_red, HIGH);
+  delay(10000); 
+     state = 1;  
+  break;
+  
+case 1: // vehicle Red + Yellow ON
+  digitalWrite(led_red, HIGH);
+  digitalWrite(led_yellow, HIGH);
+  delay(2000);
+     state = 2;
+  break;
+  
+case 2: // vehicle Green ON
+  digitalWrite(led_green, HIGH);
+  digitalWrite(led_red, LOW);
+  digitalWrite(led_yellow,LOW);
+  delay(10000);
+  state = 3;
+break;
+  
+case 3: //vehicle Yellow ON  
+  digitalWrite(led_green, LOW);
+  digitalWrite(led_yellow,HIGH);
+  delay(2000);
+  digitalWrite(led_yellow, LOW);
+     state = 0;
+  break;
+  
+} 
+}
