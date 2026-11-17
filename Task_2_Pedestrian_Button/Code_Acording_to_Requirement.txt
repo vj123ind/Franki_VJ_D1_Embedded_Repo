@@ -64,14 +64,19 @@ case 1: //vehicle Yellow ON
 case 3: // vehicle Red + Yellow ON
   digitalWrite(led_red, HIGH);
   digitalWrite(led_yellow, HIGH);
+  for(i=0;i<5;i++)
+  {
   if(button_pressed)
-  {  
-  digitalWrite(led_green_ped, LOW);
-  digitalWrite(led_red_ped, HIGH);
-  button_pressed = false;
+  {
+  digitalWrite(led_red_ped, LOW);  
+  digitalWrite(led_green_ped, HIGH);
+  if(i==3)
+    delay(2000);
+  if(i==4)
+    delay(4000);
   }
-  delay(5000);
-  
+  delay(2000);
+  }
      state = 0;
   break;
   
