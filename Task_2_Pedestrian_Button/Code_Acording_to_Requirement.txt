@@ -50,21 +50,7 @@ case 1: //vehicle Yellow ON
   
   case 2: // vehicle Red ON, Pedestrian green on 
   digitalWrite(led_red, HIGH);
-  if(button_pressed)
-  {
-  digitalWrite(led_red_ped, LOW);  
-  digitalWrite(led_green_ped, HIGH);
-  }
-  delay(10000);
-  
-     state = 3;
-  
-  break;
-  
-case 3: // vehicle Red + Yellow ON
-  digitalWrite(led_red, HIGH);
-  digitalWrite(led_yellow, HIGH);
-  for(i=0;i<5;i++)
+   for(i=0;i<5;i++)
   {
   if(button_pressed)
   {
@@ -77,6 +63,22 @@ case 3: // vehicle Red + Yellow ON
   }
   delay(2000);
   }
+  
+     state = 3;
+  
+  break;
+  
+case 3: // vehicle Red + Yellow ON
+  digitalWrite(led_red, HIGH);
+  digitalWrite(led_yellow, HIGH);
+  if(button_pressed)
+  {  
+  digitalWrite(led_green_ped, LOW);
+  digitalWrite(led_red_ped, HIGH);
+  button_pressed = false;
+  }
+  delay(5000);
+  
      state = 0;
   break;
   
