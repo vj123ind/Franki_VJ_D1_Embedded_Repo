@@ -1,0 +1,106 @@
+// C++ code
+//
+#define led_red 8
+#define led_yellow 7
+#define led_green 6
+#define led_red_ped 4
+#define led_green_ped 3
+
+int state = 0;
+int i;
+
+volatile char receivedChar = 0;
+volatile bool newData = false;
+bool button_pressed = false;
+bool Button_Previous = false;
+
+ISR(USART_RX_vect)
+{
+    receivedChar = UDR0;   // Read received byte
+    newData = true;
+    button_pressed = true;
+}
+
+void setup()
+{
+  pinMode(led_red, OUTPUT);
+  pinMode(led_yellow, OUTPUT);
+  pinMode(led_green, OUTPUT);
+  pinMode(led_red_ped, OUTPUT);
+  pinMode(led_green_ped, OUTPUT);
+  
+  
+  digitalWrite(led_red, LOW);
+  digitalWrite(led_green,LOW); 
+  digitalWrite(led_yellow,LOW);
+  digitalWrite(led_red_ped, HIGH); 
+  digitalWrite(led_green_ped,LOW);   
+
+    // UART 9600
+    UBRR0H = 0;
+    UBRR0L = 103;      // 9600 baud @ 16 MHz
+
+    UCSR0B = (1 << RXEN0) |  // Enable receiver
+             (1 << RXCIE0);  // Enable RX interrupt
+
+    UCSR0C = (1 << UCSZ01) | (1 << UCSZ00); // 8N1
+
+    sei(); // Global interrupts
+}
+
+void loop()
+{
+  switch (state) {  
+case 0: // vehicle Green ON
+  digitalWrite(led_green, HIGH);
+  digitalWrite(led_red, LOW);
+  digitalWrite(led_yellow,LOW);
+  delay(10000);
+  state = 1;
+break;
+  
+case 1: //vehicle Yellow ON  
+  digitalWrite(led_green, LOW);
+  digitalWrite(led_yellow,HIGH);
+  delay(5000);
+  digitalWrite(led_yellow, LOW);
+     state = 2;
+  break;
+  
+  case 2: // vehicle Red ON, Pedestrian green on 
+  digitalWrite(led_red, HIGH);
+   for(i=0;i<5;i++)
+  {
+  if(button_pressed)
+  {
+  digitalWrite(led_red_ped, LOW);  
+  digitalWrite(led_green_ped, HIGH);
+    if(i==3 && Button_Previous == false )
+    delay(2000);
+    if(i==4 && Button_Previous ==  false )
+    delay(4000);
+  Button_Previous = button_pressed;
+  }
+  delay(2000);
+  }
+     Button_Previous = false;
+     state = 3;
+  
+  break;
+  
+case 3: // vehicle Red + Yellow ON
+  digitalWrite(led_red, HIGH);
+  digitalWrite(led_yellow, HIGH);
+  if(button_pressed)
+  {  
+  digitalWrite(led_green_ped, LOW);
+  digitalWrite(led_red_ped, HIGH);
+  button_pressed = false;
+  }
+  delay(5000);
+  
+     state = 0;
+  break;
+  }  
+
+}

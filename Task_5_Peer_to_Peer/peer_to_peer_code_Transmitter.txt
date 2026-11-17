@@ -1,0 +1,27 @@
+// C++ code
+//
+#define buttonPin 2
+
+bool lastButtonState = HIGH;
+
+void setup()
+{
+    pinMode(buttonPin, INPUT_PULLUP);
+
+    // UART
+    Serial.begin(9600);
+}
+
+void loop()
+{
+    bool currentButtonState = digitalRead(buttonPin);
+
+    // Detect button press
+    if (lastButtonState == HIGH && currentButtonState == LOW)
+    {
+        Serial.write('A');   // Command to turn LED ON
+        delay(50);           // Simple debounce
+    }
+
+    lastButtonState = currentButtonState;
+}
