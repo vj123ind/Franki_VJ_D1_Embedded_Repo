@@ -7,8 +7,9 @@
 #define led_green_ped 3
 #define button 2
 int state = 0;
-
+int i;
 bool button_pressed = false; 
+bool Button_Previous = false;
 
 void setup()
 {
@@ -50,20 +51,21 @@ case 1: //vehicle Yellow ON
   
   case 2: // vehicle Red ON, Pedestrian green on 
   digitalWrite(led_red, HIGH);
-   for(i=0;i<5;i++)
+  for(i=0;i<5;i++)
   {
   if(button_pressed)
   {
   digitalWrite(led_red_ped, LOW);  
   digitalWrite(led_green_ped, HIGH);
-  if(i==3)
+    if(i==3 && Button_Previous == false )
     delay(2000);
-  if(i==4)
+    if(i==4 && Button_Previous ==  false )
     delay(4000);
+  Button_Previous = button_pressed;
   }
   delay(2000);
   }
-  
+     Button_Previous = false;  
      state = 3;
   
   break;
